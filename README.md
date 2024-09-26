@@ -5,7 +5,7 @@ Simple utility to create nice boxed strings
 Add the following line to your build.sbt file:
 
 ```sbt
-libraryDependencies += "com.alejandrohdezma" %% "string-box" % "0.0.0"
+libraryDependencies += "com.alejandrohdezma" %% "string-box" % "1.0.0"
 ```
 
 ## Usage
