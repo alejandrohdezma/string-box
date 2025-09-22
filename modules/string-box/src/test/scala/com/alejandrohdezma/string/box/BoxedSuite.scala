@@ -22,6 +22,105 @@ import munit.FunSuite
 
 class BoxedSuite extends FunSuite {
 
+  test("table should create a table from a list of rows") {
+    val rows = List(
+      List("Users", "Count"),
+      List("John", "10"),
+      List("Jane", "20"),
+      List("Jim", "30"),
+      List("Jill", "40")
+    )
+
+    val expected =
+      """┌───────┬───────┐
+        |│ Users │ Count │
+        |├───────┼───────┤
+        |│ Jane  │ 20    │
+        |│ Jill  │ 40    │
+        |│ Jim   │ 30    │
+        |│ John  │ 10    │
+        |├───────┴───────┤
+        |│ The footer    │
+        |└───────────────┘""".stripMargin
+
+    assertEquals(table(rows, "The footer"), expected)
+  }
+
+  test("table should create a table from a list of rows with multiple columns") {
+    val rows = List(
+      List("Users", "Count", "Age"),
+      List("John", "10", "20"),
+      List("Jane", "20", "30"),
+      List("Jim", "30", "40"),
+      List("Jill", "40", "50")
+    )
+
+    val expected =
+      """┌───────┬───────┬─────┐
+        |│ Users │ Count │ Age │
+        |├───────┼───────┼─────┤
+        |│ Jane  │ 20    │ 30  │
+        |│ Jill  │ 40    │ 50  │
+        |│ Jim   │ 30    │ 40  │
+        |│ John  │ 10    │ 20  │
+        |├───────┴───────┴─────┤
+        |│ The footer          │
+        |└─────────────────────┘""".stripMargin
+
+    assertEquals(table(rows, "The footer"), expected)
+  }
+
+  test("table should create a table from a list of rows without footer") {
+    val rows = List(
+      List("Users", "Count"),
+      List("John", "10"),
+      List("Jane", "20"),
+      List("Jim", "30"),
+      List("Jill", "40")
+    )
+
+    val expected =
+      """┌───────┬───────┐
+        |│ Users │ Count │
+        |├───────┼───────┤
+        |│ Jane  │ 20    │
+        |│ Jill  │ 40    │
+        |│ Jim   │ 30    │
+        |│ John  │ 10    │
+        |└───────┴───────┘""".stripMargin
+
+    assertEquals(table(rows), expected)
+  }
+
+  test("table should create a table from a list of rows with a footer that is longer than the table") {
+    val rows = List(
+      List("Users", "Count"),
+      List("John", "10"),
+      List("Jane", "20"),
+      List("Jim", "30"),
+      List("Jill", "40")
+    )
+
+    val expected =
+      """┌───────┬───────┐
+        |│ Users │ Count │
+        |├───────┼───────┤
+        |│ Jane  │ 20    │
+        |│ Jill  │ 40    │
+        |│ Jim   │ 30    │
+        |│ John  │ 10    │
+        |├───────┴───────┤
+        |│ This is a ver │
+        |│ y long footer │
+        |│  that should  │
+        |│ be split into │
+        |│  multiple lin │
+        |│ es            │
+        |└───────────────┘""".stripMargin
+
+    assertEquals(table(rows, "This is a very long footer that should be split into multiple lines"), expected)
+  }
+
   test("boxed should wrap the string in a box") {
     val string = "Hello\nWorld\nI'm a long line"
 

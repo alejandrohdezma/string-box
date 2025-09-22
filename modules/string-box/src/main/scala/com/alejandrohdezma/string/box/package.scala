@@ -20,6 +20,78 @@ import scala.io.AnsiColor._
 
 package object box {
 
+  /** Creates a table from a list of rows.
+    *
+    * @example
+    *
+    * {{{
+    * val rows = List(
+    *   List("Users", "Count"),
+    *   List("John", "10"),
+    *   List("Jane", "20"),
+    *   List("Jim", "30"),
+    *   List("Jill", "40")d
+    * )
+    *
+    * table(rows, "The footer")
+    * // res0: String =
+    * // ┌───────┬───────┐
+    * // │ Users │ Count │
+    * // ├───────┼───────┤
+    * // │ Jane  │ 20    │
+    * // │ Jill  │ 40    │
+    * // │ Jim   │ 30    │
+    * // │ John  │ 10    │
+    * // ├───────┴───────┤
+    * // │ The footer    │
+    * // └───────────────┘
+    * }}}
+    *
+    * @param rows
+    *   the list of rows
+    * @param footer
+    *   the footer
+    *
+    * @return
+    *   the table
+    */
+  def table(rows: List[List[String]], footer: String = "") = {
+    def padRow(row: List[String], maxSizePerColumn: List[Int]) =
+      row.zip(maxSizePerColumn).map { case (cell, size) => cell.padTo(size, ' ') }
+
+    val maxSizePerColumn = rows.transpose.map(_.map(_.length).max)
+
+    val topBorder = s"┌─${maxSizePerColumn.map("─" * _).mkString("─┬─")}─┐"
+
+    val headerRow = s"│ ${padRow(rows.head, maxSizePerColumn).mkString(" │ ")} │"
+
+    val separator = s"├─${maxSizePerColumn.map("─" * _).mkString("─┼─")}─┤"
+
+    val dataRows = rows.tail.map(row => s"│ ${padRow(row, maxSizePerColumn).mkString(" │ ")} │").sorted
+
+    val footerSection = if (footer.nonEmpty) {
+      val footerSeparator = s"├─${maxSizePerColumn.map("─" * _).mkString("─┴─")}─┤"
+
+      val totalWidth = maxSizePerColumn.sum + (maxSizePerColumn.length - 1) * 3
+
+      val footerRows =
+        if (totalWidth > footer.length)
+          List(s"│ ${footer.padTo(totalWidth, ' ')} │")
+        else
+          footer.grouped(totalWidth).map(s => s"│ ${s.padTo(totalWidth, ' ')} │").toList
+
+      List(footerSeparator) ++ footerRows
+    } else List.empty
+
+    val bottomBorder =
+      if (footer.nonEmpty)
+        s"└─${maxSizePerColumn.map("─" * _).mkString("───")}─┘"
+      else
+        s"└─${maxSizePerColumn.map("─" * _).mkString("─┴─")}─┘"
+
+    (List(topBorder, headerRow, separator) ++ dataRows ++ footerSection ++ List(bottomBorder)).mkString("\n")
+  }
+
   implicit class StringBoxedOps(private val string: String) extends AnyVal {
 
     /** Returns the string wrapped in a box with the same width as the longest line.
