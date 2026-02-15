@@ -12,4 +12,4 @@ lazy val documentation = project
   .dependsOn(`string-box`)
 
 lazy val `string-box` = module
-  .settings(libraryDependencies += "org.scalameta" %% "munit" % "1.2.1" % Test)
+  .settings(libraryDependencies += "org.scalameta" %% "munit" % "1.2.2" % Test)
