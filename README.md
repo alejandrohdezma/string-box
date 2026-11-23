@@ -5,7 +5,7 @@ Simple utility to create nice boxed strings
 Add the following line to your build.sbt file:
 
 ```sbt
-libraryDependencies += "com.alejandrohdezma" %% "string-box" % "1.0.0"
+libraryDependencies += "com.alejandrohdezma" %% "string-box" % "2.2.0"
 ```
 
 ## Usage
@@ -38,6 +38,48 @@ And then use `.boxed` method on any `String` value you want to get wrapped in a 
 ```
 
 `boxed` takes ANSI colors (from `scala.io.AnsiColor`) into account, so they're not counted when calculating the width of the box.
+
+Additionally, you can use `table` method to create a table from a list of rows:
+
+```scala
+"\n" + table(List(
+  List("Users", "Count"),
+  List("John", "10"),
+  List("Jane", "20"),
+  List("Jim", "30"),
+  List("Jill", "40")
+), "The footer")
+// res2: String = """
+// ┌───────┬───────┐
+// │ Users │ Count │
+// ├───────┼───────┤
+// │ Jane  │ 20    │
+// │ Jill  │ 40    │
+// │ Jim   │ 30    │
+// │ John  │ 10    │
+// ├───────┴───────┤
+// │ The footer    │
+// └───────────────┘"""
+```
+
+```scala
+"\n" + table(List(
+  List("Users", "Count", "Age"),
+  List("John", "10", "20"),
+  List("Jane", "20", "30"),
+  List("Jim", "30", "40"),
+  List("Jill", "40", "50")
+))
+// res3: String = """
+// ┌───────┬───────┬─────┐
+// │ Users │ Count │ Age │
+// ├───────┼───────┼─────┤
+// │ Jane  │ 20    │ 30  │
+// │ Jill  │ 40    │ 50  │
+// │ Jim   │ 30    │ 40  │
+// │ John  │ 10    │ 20  │
+// └───────┴───────┴─────┘"""
+```
 
 ## Contributors to this project 
 
